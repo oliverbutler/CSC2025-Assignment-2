@@ -1,0 +1,281 @@
+---------------------------------------------------
+TESTING DO_STARTFSLOG
+test invalid ops2log == -1 ...
+... success
+test invalid ops2log == 128 ...
+... success
+test valid ops2log == 0 ...
+... success
+test valid ops2log == 1 ...
+... success
+test valid ops2log == 127 ...
+... success
+---------------------------------------------------
+TESTING DO_STOPFSLOG
+test invalid ops2stoplog == -1 ...
+... success
+test invalid ops2stoplog == 128 ...
+... success
+test valid ops2stoplog == 127 ...
+... success
+test valid ops2stoplog == 1 ...
+... success
+test valid ops2stoplog == 0 ...
+... success
+---------------------------------------------------
+TESTING DO_GETFSLOGINF
+test invalid fsloginf == NULL ...
+... success
+test valid fsloginf (before and after logging all) ...
+---------------------------------------------------
+Filesystem log meta-information
+---------------------------------------------------
+index of first entry (start):      2
+entries in log (len):            200
+operations to log (ops2log):    0177
+---------------------------------------------------
+---------------------------------------------------
+Filesystem log meta-information
+---------------------------------------------------
+index of first entry (start):     10
+entries in log (len):            200
+operations to log (ops2log):    0000
+---------------------------------------------------
+... success
+---------------------------------------------------
+TESTING DO_GETFSLOG
+test invalid (fsloginf, fslog) == (NULL, fslog) ...
+... success
+test invalid (fsloginf, fslog) == (fsloginf, NULL) ...
+... success
+test invalid (fsloginf, fslog) == (NULL, NULL) ...
+... success
+test valid (fsloginf, fslog) ...
+Filesystem ops to log are selected by bitwise combinations of 
+one or more of the following opcodes:
+  FSOP_NONE      : none                         : 0000 oct or   0 dec
+  FSOP_OPEN      : open                         : 0001 oct or   1 dec
+  FSOP_CLOSE     : close                        : 0002 oct or   2 dec
+  FSOP_READ      : read                         : 0004 oct or   4 dec
+  FSOP_WRITE     : write                        : 0010 oct or   8 dec
+  FSOP_CREAT     : create                       : 0020 oct or  16 dec
+  FSOP_UNLNK     : unlink/delete                : 0040 oct or  32 dec
+  FSOP_ALL_WOERR : all without errors           : 0077 oct or  63 dec
+  FSOP_ERR       : errors when ORed with others : 0100 oct or  64 dec
+  FSOP_ALL       : all                          : 0177 oct or 127 dec
+(see unistd.h for definition of FSOP_* constants)
+Enter a valid combination of opcode(s) to log (anything else to abort): 127
+---------------------------------------------------
+Filesystem log meta-information
+---------------------------------------------------
+index of first entry (start):      2
+entries in log (len):            200
+operations to log (ops2log):    0000
+---------------------------------------------------
+---------------------------------------------------
+Filesystem log entries
+---------------------------------------------------
+ idx | opcode | result |   fd |  mode    | cp_pid | cp_name, path, size, timestamp
+   2 | 000021 |      0 |    5 |  0100644 |    621 | test_syscalls, 02_fslog_test, 0, Fri Nov  8 15:29:15 2019
+   3 | 000004 |      2 |    9 |   020666 |    545 | sshd, N/A, 0, Fri Nov  8 15:29:15 2019
+   4 | 000021 |      0 |    6 |  0100644 |    621 | test_syscalls, 03_fslog_test, 0, Fri Nov  8 15:29:15 2019
+   5 | 000021 |      0 |    7 |  0100644 |    621 | test_syscalls, 04_fslog_test, 0, Fri Nov  8 15:29:15 2019
+   6 | 000021 |      0 |    8 |  0100644 |    621 | test_syscalls, 05_fslog_test, 0, Fri Nov  8 15:29:15 2019
+   7 | 000021 |      0 |    9 |  0100644 |    621 | test_syscalls, 06_fslog_test, 0, Fri Nov  8 15:29:15 2019
+   8 | 000021 |      0 |   10 |  0100644 |    621 | test_syscalls, 07_fslog_test, 0, Fri Nov  8 15:29:15 2019
+   9 | 000021 |      0 |   11 |  0100644 |    621 | test_syscalls, 08_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  10 | 000010 |     40 |    3 |   027777 |    545 | sshd, N/A, 1674, Fri Nov  8 15:29:15 2019
+  11 | 000021 |      0 |   12 |  0100644 |    621 | test_syscalls, 09_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  12 | 000021 |      0 |   13 |  0100644 |    621 | test_syscalls, 10_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  13 | 000021 |      0 |   14 |  0100644 |    621 | test_syscalls, 11_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  14 | 000021 |      0 |   15 |  0100644 |    621 | test_syscalls, 12_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  15 | 000021 |      0 |   16 |  0100644 |    621 | test_syscalls, 13_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  16 | 000021 |      0 |   17 |  0100644 |    621 | test_syscalls, 14_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  17 | 000021 |      0 |   18 |  0100644 |    621 | test_syscalls, 15_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  18 | 000021 |      0 |   19 |  0100644 |    621 | test_syscalls, 16_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  19 | 000021 |      0 |   20 |  0100644 |    621 | test_syscalls, 17_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  20 | 000021 |      0 |   21 |  0100644 |    621 | test_syscalls, 18_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  21 | 000021 |      0 |   22 |  0100644 |    621 | test_syscalls, 19_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  22 | 000021 |      0 |   23 |  0100644 |    621 | test_syscalls, 20_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  23 | 000021 |      0 |   24 |  0100644 |    621 | test_syscalls, 21_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  24 | 000021 |      0 |   25 |  0100644 |    621 | test_syscalls, 22_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  25 | 000021 |      0 |   26 |  0100644 |    621 | test_syscalls, 23_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  26 | 000021 |      0 |   27 |  0100644 |    621 | test_syscalls, 24_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  27 | 000021 |      0 |   28 |  0100644 |    621 | test_syscalls, 25_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  28 | 000021 |      0 |   29 |  0100644 |    621 | test_syscalls, 26_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  29 | 000021 |      0 |   30 |  0100644 |    621 | test_syscalls, 27_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  30 | 000021 |      0 |   31 |  0100644 |    621 | test_syscalls, 28_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  31 | 000021 |      0 |   32 |  0100644 |    621 | test_syscalls, 29_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  32 | 000021 |      0 |   33 |  0100644 |    621 | test_syscalls, 30_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  33 | 000021 |      0 |   34 |  0100644 |    621 | test_syscalls, 31_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  34 | 000021 |      0 |   35 |  0100644 |    621 | test_syscalls, 32_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  35 | 000021 |      0 |   36 |  0100644 |    621 | test_syscalls, 33_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  36 | 000021 |      0 |   37 |  0100644 |    621 | test_syscalls, 34_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  37 | 000021 |      0 |   38 |  0100644 |    621 | test_syscalls, 35_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  38 | 000021 |      0 |   39 |  0100644 |    621 | test_syscalls, 36_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  39 | 000021 |      0 |   40 |  0100644 |    621 | test_syscalls, 37_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  40 | 000021 |      0 |   41 |  0100644 |    621 | test_syscalls, 38_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  41 | 000021 |      0 |   42 |  0100644 |    621 | test_syscalls, 39_fslog_test, 0, Fri Nov  8 15:29:15 2019
+  42 | 000010 |     15 |    3 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  43 | 000010 |     15 |    4 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  44 | 000010 |     15 |    5 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  45 | 000010 |     15 |    6 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  46 | 000010 |     15 |    7 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  47 | 000010 |     15 |    8 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  48 | 000010 |     15 |    9 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  49 | 000010 |     15 |   10 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  50 | 000010 |     15 |   11 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  51 | 000010 |     15 |   12 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  52 | 000010 |     15 |   13 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  53 | 000010 |     15 |   14 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  54 | 000010 |     15 |   15 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  55 | 000010 |     15 |   16 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  56 | 000010 |     15 |   17 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  57 | 000010 |     15 |   18 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  58 | 000010 |     15 |   19 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  59 | 000010 |     15 |   20 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  60 | 000010 |     15 |   21 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  61 | 000010 |     15 |   22 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  62 | 000010 |     15 |   23 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  63 | 000010 |     15 |   24 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  64 | 000010 |     15 |   25 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  65 | 000010 |     15 |   26 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  66 | 000010 |     15 |   27 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  67 | 000010 |     15 |   28 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  68 | 000010 |     15 |   29 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  69 | 000010 |     15 |   30 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  70 | 000010 |     15 |   31 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  71 | 000010 |     15 |   32 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  72 | 000010 |     15 |   33 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  73 | 000010 |     15 |   34 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  74 | 000010 |     15 |   35 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  75 | 000010 |     15 |   36 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  76 | 000010 |     15 |   37 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  77 | 000010 |     15 |   38 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  78 | 000010 |     15 |   39 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  79 | 000010 |     15 |   40 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  80 | 000010 |     15 |   41 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  81 | 000010 |     15 |   42 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  82 | 000004 |     14 |    3 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  83 | 000004 |     14 |    4 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  84 | 000004 |     14 |    5 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  85 | 000004 |     14 |    6 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  86 | 000004 |     14 |    7 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  87 | 000004 |     14 |    8 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  88 | 000004 |     14 |    9 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  89 | 000004 |     14 |   10 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  90 | 000004 |     14 |   11 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  91 | 000004 |     14 |   12 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  92 | 000004 |     14 |   13 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  93 | 000004 |     14 |   14 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  94 | 000004 |     14 |   15 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  95 | 000004 |     14 |   16 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  96 | 000004 |     14 |   17 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  97 | 000004 |     14 |   18 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  98 | 000004 |     14 |   19 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+  99 | 000004 |     14 |   20 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 100 | 000004 |     14 |   21 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 101 | 000004 |     14 |   22 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 102 | 000004 |     14 |   23 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 103 | 000004 |     14 |   24 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 104 | 000004 |     14 |   25 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 105 | 000004 |     14 |   26 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 106 | 000004 |     14 |   27 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 107 | 000004 |     14 |   28 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 108 | 000004 |     14 |   29 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 109 | 000004 |     14 |   30 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 110 | 000004 |     14 |   31 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 111 | 000004 |     14 |   32 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 112 | 000004 |     14 |   33 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 113 | 000004 |     14 |   34 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 114 | 000004 |     14 |   35 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 115 | 000004 |     14 |   36 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 116 | 000004 |     14 |   37 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 117 | 000004 |     14 |   38 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 118 | 000004 |     14 |   39 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 119 | 000004 |     14 |   40 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 120 | 000004 |     14 |   41 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 121 | 000004 |     14 |   42 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:16 2019
+ 122 | 000002 |      0 |    3 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 123 | 000002 |      0 |    4 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 124 | 000002 |      0 |    5 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 125 | 000002 |      0 |    6 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 126 | 000002 |      0 |    7 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 127 | 000002 |      0 |    8 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 128 | 000002 |      0 |    9 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 129 | 000002 |      0 |   10 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 130 | 000002 |      0 |   11 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 131 | 000002 |      0 |   12 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 132 | 000002 |      0 |   13 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 133 | 000002 |      0 |   14 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 134 | 000002 |      0 |   15 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 135 | 000002 |      0 |   16 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 136 | 000002 |      0 |   17 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 137 | 000002 |      0 |   18 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 138 | 000002 |      0 |   19 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 139 | 000002 |      0 |   20 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 140 | 000002 |      0 |   21 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 141 | 000002 |      0 |   22 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 142 | 000002 |      0 |   23 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 143 | 000002 |      0 |   24 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 144 | 000002 |      0 |   25 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 145 | 000002 |      0 |   26 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 146 | 000002 |      0 |   27 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 147 | 000002 |      0 |   28 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 148 | 000002 |      0 |   29 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 149 | 000002 |      0 |   30 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 150 | 000002 |      0 |   31 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 151 | 000002 |      0 |   32 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 152 | 000002 |      0 |   33 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 153 | 000002 |      0 |   34 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 154 | 000002 |      0 |   35 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 155 | 000002 |      0 |   36 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 156 | 000002 |      0 |   37 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 157 | 000002 |      0 |   38 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 158 | 000002 |      0 |   39 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 159 | 000002 |      0 |   40 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 160 | 000002 |      0 |   41 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 161 | 000002 |      0 |   42 |  0100644 |    621 | test_syscalls, N/A, 15, Fri Nov  8 15:29:17 2019
+ 162 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 00_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 163 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 01_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 164 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 02_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 165 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 03_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 166 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 04_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 167 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 05_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 168 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 06_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 169 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 07_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 170 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 08_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 171 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 09_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 172 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 10_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 173 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 11_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 174 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 12_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 175 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 13_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 176 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 14_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 177 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 15_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 178 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 16_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 179 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 17_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 180 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 18_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 181 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 19_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 182 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 20_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 183 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 21_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 184 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 22_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 185 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 23_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 186 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 24_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 187 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 25_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 188 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 26_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 189 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 27_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 190 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 28_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 191 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 29_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 192 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 30_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 193 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 31_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 194 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 32_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 195 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 33_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 196 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 34_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 197 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 35_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 198 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 36_fslog_test, -1, Fri Nov  8 15:29:17 2019
+ 199 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 37_fslog_test, -1, Fri Nov  8 15:29:17 2019
+   0 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 38_fslog_test, -1, Fri Nov  8 15:29:17 2019
+   1 | 000040 |      0 |   -1 |        0 |    621 | test_syscalls, 39_fslog_test, -1, Fri Nov  8 15:29:17 2019
+---------------------------------------------------
+... success
+---------------------------------------------------
