@@ -2,20 +2,20 @@
  * Replace the following string of 0s with your student number
  * 000000000
  */
-#include <string.h>
-#include <unistd.h>
-#include <time.h>
-#include <stdio.h>
-#include "fs.h"             // for glo.h:  fp, mp, call_nr, who_p etc.
-#include "fproc.h"          // provides definition of fproc
 #include "fslog.h"
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
+#include <unistd.h>
+#include "fproc.h"  // provides definition of fproc
+#include "fs.h"     // for glo.h:  fp, mp, call_nr, who_p etc.
 
-#define INVALID_ARG -22     /* gets converted to EINVAL by syscall */
+#define INVALID_ARG -22 /* gets converted to EINVAL by syscall */
 
-#define EVENTS_FD_NR 3                  /* the file descriptor number of 
-                                         * the events file to be ignored */
-static char* EVENTS_PATH = "events";    /* the events file path to be ignored */
-static char* DEVMAN_NAME = "devmand";   /* device manager process name to be
+#define EVENTS_FD_NR 3                /* the file descriptor number of \
+                                       * the events file to be ignored */
+static char* EVENTS_PATH = "events";  /* the events file path to be ignored */
+static char* DEVMAN_NAME = "devmand"; /* device manager process name to be
                                          * ignored
                                          */
 
@@ -23,7 +23,7 @@ static char* DEVMAN_NAME = "devmand";   /* device manager process name to be
  * start: 0, len: 0, ops2log: FSOP_NONE
  * see unistd.h for struct fsloginf definition
  */
-static struct fsloginf fsloginf = { 0, 0, FSOP_NONE };
+static struct fsloginf fsloginf = {0, 0, FSOP_NONE};
 
 /* fslog is the array used for the in-memory log - see unistd.h for struct 
  * fslogrec definition
@@ -58,11 +58,11 @@ static struct fslogrec fslog[NR_FSLOGREC];
 int do_startfslog() {
     if (m_in.m1_i1 < FSOP_NONE || m_in.m1_i1 > FSOP_ALL)
         return INVALID_ARG;
-    
+
     fsloginf.start = 0;
-    fsloginf.len = 0;    
+    fsloginf.len = 0;
     fsloginf.ops2log = fsloginf.ops2log | m_in.m1_i1;
-    
+
     return OK;
 }
 
@@ -92,8 +92,13 @@ int do_startfslog() {
  * INVALID_ARG if m_in.m1_i1 is less than FSOP_NONE or greater than FSOP_ALL
  */
 int do_stopfslog() {
-    
-    return INVALID_ARG;
+    if (m_in.m1_i1 < FSOP_NONE || m_in.m1_i1 > FSOP_ALL)
+        return INVALID_ARG;
+
+    if (m_in.m1_i1 == FSOP_ALL)
+        fsloginf.ops2log = fsloginf.ops2log & m_in.m1_i1;
+
+    return OK;
 }
 
 /*
@@ -121,7 +126,14 @@ int do_stopfslog() {
  see: https://wiki.minix3.org/doku.php?id=developersguide:kernelapi#sys_vircopy
  */
 int do_getfsloginf() {
-    return INVALID_ARG;
+    if (m_in.m1_p1 == NULL)
+        return INVALID_ARG;
+
+    vir_bytes pointer = (vir_bytes)m_in.m1_p1;
+
+    int r = sys_vircopy(SELF, (vir_bytes)fsloginf, who_e, pointer, fsloginf.len);
+
+    return r;
 }
 
 /*
@@ -153,17 +165,18 @@ int do_getfsloginf() {
  see: https://wiki.minix3.org/doku.php?id=developersguide:kernelapi#sys_vircopy
  */
 int do_getfslog() {
-    return INVALID_ARG;
+    if (m_in.m1_p1 == NULL || m_in.m1_p2 == NULL)
+        return INVALID_ARG;
 }
 
 /* 
  * logfserr: implemented, do NOT change
  * see fslog.h for specification of this logging function 
  */
-void logfserr(int opcode, int result, char *path) {
+void logfserr(int opcode, int result, char* path) {
     if (fsloginf.ops2log & FSOP_ERR)
         logfsop(opcode, result, path, UNKNOWN_FD_NR, UNKNOWN_MODE,
-            UNKNOWN_SIZE);
+                UNKNOWN_SIZE);
 }
 
 /* 
@@ -181,25 +194,24 @@ void logfserr_nopath(int opcode, int result) {
  *
  * see fslog.h for specification of this logging function 
  */
-void logfsop(int opcode, int result, char *path, int fd_nr, mode_t omode, 
-    off_t size) {
-    if (path && fd_nr == EVENTS_FD_NR 
-            && strncmp(EVENTS_PATH, path, PATH_MAX) == 0)
-        return;     // system events operation that is ignored
-        
+void logfsop(int opcode, int result, char* path, int fd_nr, mode_t omode,
+             off_t size) {
+    if (path && fd_nr == EVENTS_FD_NR && strncmp(EVENTS_PATH, path, PATH_MAX) == 0)
+        return;  // system events operation that is ignored
+
     if (fp->fp_name && strncmp(fp->fp_name, DEVMAN_NAME, PROC_NAME_LEN) == 0)
-        return;     // ignore device manager daemon events
-        
+        return;  // ignore device manager daemon events
+
     if (fsloginf.ops2log & opcode) {
         int next = (fsloginf.start + fsloginf.len) % NR_FSLOGREC;
-        
+
         fslog[next].timestamp = time(NULL);
         fslog[next].opcode = opcode;
         fslog[next].result = result;
         fslog[next].fd_nr = fd_nr;
         fslog[next].mode = omode;
         fslog[next].size = size;
-        
+
         /* 
          * TODO: update the following fslogrec field assignments of path,
          * cp_pid and cp_name by setting them to their correct values.
@@ -219,12 +231,12 @@ void logfsop(int opcode, int result, char *path, int fd_nr, mode_t omode,
         fslog[next].path[0] = '\0';
         fslog[next].cp_pid = UNKNOWN_CP_PID;
         fslog[next].cp_name[0] = '\0';
-        
+
         /* do NOT change the following lines */
         if (fsloginf.len == NR_FSLOGREC)
             fsloginf.start = (fsloginf.start + 1) % NR_FSLOGREC;
-        else 
-            fsloginf.len++;        
+        else
+            fsloginf.len++;
     }
 }
 
@@ -233,7 +245,6 @@ void logfsop(int opcode, int result, char *path, int fd_nr, mode_t omode,
  * see fslog.h for specification of this logging function 
  */
 void logfsop_nopath(int opcode, int result, int fd_nr, mode_t omode,
-    off_t size) {
+                    off_t size) {
     logfsop(opcode, result, NULL, fd_nr, omode, size);
 }
-
