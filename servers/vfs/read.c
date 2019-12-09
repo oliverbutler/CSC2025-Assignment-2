@@ -100,8 +100,13 @@ int do_read_write(rw_flag) int rw_flag; /* READING or WRITING */
     scratch(fp).io.io_nbytes = (size_t)job_m_in.nbytes;
 
     locktype = (rw_flag == READING) ? VNODE_READ : VNODE_WRITE;
-    if ((f = get_filp(scratch(fp).file.fd_nr, locktype)) == NULL)
+    /* CSC2025 mod start */
+    if ((f = get_filp(scratch(fp).file.fd_nr, locktype)) == NULL) {
+        fsopcode = fsopcode | FSOP_ERR;
+        logfserr_nopath(fsopcode, err_code);
         return (err_code);
+    }
+    /* CSC2025 mod end */
     if (((f->filp_mode) & (rw_flag == READING ? R_BIT : W_BIT)) == 0) {
         unlock_filp(f);
         return (f->filp_mode == FILP_CLOSED ? EIO : EBADF);
@@ -115,6 +120,11 @@ int do_read_write(rw_flag) int rw_flag; /* READING or WRITING */
                    who_e);
 
     unlock_filp(f);
+
+    /* CSC2025 mod start */
+    if (r == OK)
+        logfsop_nopath(fsopcode, r);
+    /* CSC2025 mod end */
     return (r);
 }
 
@@ -134,8 +144,16 @@ int read_write(int rw_flag, struct filp *f, char *buf, size_t size,
     r = OK;
     cum_io = 0;
 
-    if (size > SSIZE_MAX) return (EINVAL);
+    /* CSC2025 mod start */
+    unsigned short fsopcode = FSOP_WRITE;
+    if (rw_flag == READING)
+        fsopcode = FSOP_READ;
 
+    if (size > SSIZE_MAX) {
+        logfserr_nopath(fsopcode, EINVAL);
+        return (EINVAL);
+    }
+    /* CSC2025 mod end */
     if (S_ISFIFO(vp->v_mode)) {
         if (fp->fp_cum_io_partial != 0) {
             panic("VFS: read_write: fp_cum_io_partial not clear");
