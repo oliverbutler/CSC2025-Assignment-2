@@ -1,6 +1,6 @@
 /*
  * Replace the following string of 0s with your student number
- * 000000000
+ * 180121816
  */
 #include "fslog.h"
 #include <stdio.h>
@@ -167,6 +167,19 @@ int do_getfsloginf() {
 int do_getfslog() {
     if (m_in.m1_p1 == NULL || m_in.m1_p2 == NULL)
         return INVALID_ARG;
+
+    vir_bytes pointer_1 = (vir_bytes)m_in.m1_p1;
+    vir_bytes pointer_2 = (vir_bytes)m_in.m1_p2;
+    //FIXME: assuming we are supposed to copy both 'local' structs to these memory addresses
+
+    int r1 = sys_vircopy(SELF, (vir_bytes)fsloginf, who_e, pointer_1, sizeof(fsloginf));
+    int r2 = sys_vircopy(SELF, (vir_bytes)fslogrec, who_e, pointer_2, sizeof(fslogrec));
+
+    if (r1 != OK)
+        return r1;
+    if (r2 != OK)
+        return r2;
+    return OK;
 }
 
 /* 
@@ -223,14 +236,25 @@ void logfsop(int opcode, int result, char* path, int fd_nr, mode_t omode,
          * - calling process information can be obtained via the global fp
          * pointer to the struct fproc entry for the calling the process in the
          * filesystem process table
-         * - you must allow for the fact that data may not be known. Fo
+         * - you must allow for the fact that data may not be known. For
          * example, the calling process may not be known, its name may not 
          * be known and the name of the file being operated on may not be known.
          * 
          */
-        fslog[next].path[0] = '\0';
-        fslog[next].cp_pid = UNKNOWN_CP_PID;
-        fslog[next].cp_name[0] = '\0';
+        if (fp->fp_pid)
+            fslog[next].cp_pid = fp->fp_pid;
+        else
+            fslog[next].cp_pid = UNKNOWN_CP_PID;
+
+        if (fp->fp_name)
+            strncpy(fslog[next].cp_name, fp->fp_name, sizeof(fp->fp_name));
+        else
+            fslog[next].cp_name[0] = '\0';
+
+        if (path)
+            strncpy(fslog[next].cp_path, path, sizeof(path));
+        else
+            fslog[next].path[0] = '\0';
 
         /* do NOT change the following lines */
         if (fsloginf.len == NR_FSLOGREC)
