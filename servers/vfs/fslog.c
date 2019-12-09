@@ -131,7 +131,7 @@ int do_getfsloginf() {
 
     vir_bytes pointer = (vir_bytes)m_in.m1_p1;
 
-    int r = sys_vircopy(SELF, (vir_bytes)fsloginf, who_e, pointer, fsloginf.len);
+    int r = sys_vircopy(SELF, (vir_bytes)fsloginf, who_e, pointer, sizeof(fsloginf));
 
     return r;
 }
