@@ -1,17 +1,20 @@
 /*
  * Replace the following string of 0s with your student number
- * 000000000
+ * 180121816
  */
-#include <lib.h>    // provides _syscall and message
-#include <errno.h>
 #include "fsloglib.h"
+#include <errno.h>
+#include <lib.h>  // provides _syscall and message
 
 /*
  * TODO: implement initfslog
  * see fsloglib.h for specification of initfslog
  */
 void initfslog(void) {
-    return;
+    message m;
+    m.m1_i1 = (int)FSOP_NONE;
+
+    return _syscall(VFS_PROC_NR, STARTFSLOG, &m);
 }
 
 /* startfslog: implemented, do NOT change */
@@ -20,9 +23,9 @@ int startfslog(unsigned short ops2log) {
         errno = EINVAL;
         return -1;
     }
-    
+
     message m;
-    m.m1_i1 = (int) ops2log;
+    m.m1_i1 = (int)ops2log;
 
     return _syscall(VFS_PROC_NR, STARTFSLOG, &m);
 }
@@ -32,7 +35,15 @@ int startfslog(unsigned short ops2log) {
  * see fsloglib.h for specification of stopfslog
  */
 int stopfslog(unsigned short ops2stoplog) {
-    return -1;
+    if (ops2stoplog < FSOP_NONE || ops2stoplog > FSOP_ALL) {
+        errno = EINVAL;
+        return -1;
+    }
+
+    message m;
+    m.m1_i1 = (int)ops2stoplog;
+
+    return _syscall(VFS_PROC_NR, STOPFSLOG, &m);
 }
 
 /*
@@ -40,7 +51,15 @@ int stopfslog(unsigned short ops2stoplog) {
  * see fsloglib.h for specification of initfslog
  */
 int getfsloginf(struct fsloginf *fsloginf) {
-    return -1;
+    if (!fsloginf) {
+        errno = EINVAL;
+        return -1;
+    }
+
+    message m;
+    m.m1_p1 = &fsloginf;
+
+    return _syscall(VFS_PROC_NR, GETFSLOGIF, &m);
 }
 
 /*
@@ -48,5 +67,14 @@ int getfsloginf(struct fsloginf *fsloginf) {
  * see fsloglib.h for specification of getfslog
  */
 int getfslog(struct fsloginf *fsloginf, struct fslogrec fslog[]) {
-    return -1;
+    if (!fsloginf || !fslog) {
+        errno = EINVAL;
+        return -1;
+    }
+
+    message m;
+    m.m1_p1 = &fsloginf;
+    m.m1_p2 = &fslog;
+
+    return _syscall(VFS_PROC_NR, GETFSLOGIF, &m);
 }

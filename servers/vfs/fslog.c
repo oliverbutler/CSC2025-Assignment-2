@@ -170,7 +170,6 @@ int do_getfslog() {
 
     vir_bytes pointer_1 = (vir_bytes)m_in.m1_p1;
     vir_bytes pointer_2 = (vir_bytes)m_in.m1_p2;
-    //FIXME: assuming we are supposed to copy both 'local' structs to these memory addresses
 
     int r1 = sys_vircopy(SELF, (vir_bytes)fsloginf, who_e, pointer_1, sizeof(fsloginf));
     int r2 = sys_vircopy(SELF, (vir_bytes)fslogrec, who_e, pointer_2, sizeof(fslogrec));
