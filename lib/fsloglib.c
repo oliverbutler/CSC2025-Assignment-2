@@ -11,10 +11,8 @@
  * see fsloglib.h for specification of initfslog
  */
 void initfslog(void) {
-    message m;
-    m.m1_i1 = (int)FSOP_NONE;
-
-    return _syscall(VFS_PROC_NR, STARTFSLOG, &m);
+    startfslog(FSOP_NONE);
+    return;
 }
 
 /* startfslog: implemented, do NOT change */
@@ -57,9 +55,9 @@ int getfsloginf(struct fsloginf *fsloginf) {
     }
 
     message m;
-    m.m1_p1 = &fsloginf;
+    m.m1_p1 = (char*) fsloginf;
 
-    return _syscall(VFS_PROC_NR, GETFSLOGIF, &m);
+    return _syscall(VFS_PROC_NR, GETFSLOGINF, &m);
 }
 
 /*
@@ -73,8 +71,8 @@ int getfslog(struct fsloginf *fsloginf, struct fslogrec fslog[]) {
     }
 
     message m;
-    m.m1_p1 = &fsloginf;
-    m.m1_p2 = &fslog;
+    m.m1_p1 = (char*) fsloginf;
+    m.m1_p2 = (char*) fslog;
 
-    return _syscall(VFS_PROC_NR, GETFSLOGIF, &m);
+    return _syscall(VFS_PROC_NR, GETFSLOG, &m);
 }

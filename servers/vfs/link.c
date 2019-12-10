@@ -114,31 +114,47 @@ int do_unlink()
   vname_length = job_m_in.name_length;
   if (copy_name(vname_length, fullpath) != OK) {
 	/* Direct copy failed, try fetching from user space */
-	if (fetch_name(vname, vname_length, fullpath) != OK)
+
+    /* CSC2025 mod start */
+	if (fetch_name(vname, vname_length, fullpath) != OK) 
+        logfserr_nopath(FSOP_UNLNK, err_code);
 		return(err_code);
+    
+    /* CSC2025 mod end */
   }
 
   lookup_init(&resolve, fullpath, PATH_RET_SYMLINK, &vmp, &dirp_l);
   resolve.l_vmnt_lock = VMNT_WRITE;
   resolve.l_vnode_lock = VNODE_WRITE;
 
+  /* CSC2025 mod start */
   /* Get the last directory in the path. */
-  if ((dirp = last_dir(&resolve, fp)) == NULL) return(err_code);
+  if ((dirp = last_dir(&resolve, fp)) == NULL) {
+    logfserr(FSOP_UNLNK, err_code, fullpath);
+    return(err_code);
+  }
+  /* CSC2025 mod end */
 
   /* Make sure that the object is a directory */
   if (!S_ISDIR(dirp->v_mode)) {
-	unlock_vnode(dirp);
-	unlock_vmnt(vmp);
-	put_vnode(dirp);
-	return(ENOTDIR);
+    /* CSC2025 mod start */
+    logfserr(FSOP_UNLNK, ENOTDIR, fullpath);
+    /* CSC2025 mod end */
+    unlock_vnode(dirp);
+    unlock_vmnt(vmp);
+    put_vnode(dirp);
+    return(ENOTDIR);
   }
 
   /* The caller must have both search and execute permission */
   if ((r = forbidden(fp, dirp, X_BIT | W_BIT)) != OK) {
-	unlock_vnode(dirp);
-	unlock_vmnt(vmp);
-	put_vnode(dirp);
-	return(r);
+    /* CSC2025 mod start */
+    logfserr(FSOP_UNLNK, r, fullpath);
+    /* CSC2025 mod end */
+    unlock_vnode(dirp);
+    unlock_vmnt(vmp);
+    put_vnode(dirp);
+    return(r);
   }
 
   /* Also, if the sticky bit is set, only the owner of the file or a privileged
@@ -161,6 +177,9 @@ int do_unlink()
 		unlock_vnode(dirp);
 		unlock_vmnt(vmp);
 		put_vnode(dirp);
+    /* CSC2025 mod start */
+    logfserr(FSOP_UNLNK, r, fullpath);
+    /* CSC2025 mod end */
 		return(r);
 	}
   }
@@ -171,6 +190,9 @@ int do_unlink()
 	  r = req_unlink(dirp->v_fs_e, dirp->v_inode_nr, fullpath);
   else
 	  r = req_rmdir(dirp->v_fs_e, dirp->v_inode_nr, fullpath);
+  /* CSC2025 mod start */
+  logfsop(FSOP_UNLNK, r, fullpath, UNKNOWN_FD_NR, UNKNOWN_MODE, UNKNOWN_SIZE);
+  /* CSC2025 mod end */
   unlock_vnode(dirp);
   unlock_vmnt(vmp);
   put_vnode(dirp);

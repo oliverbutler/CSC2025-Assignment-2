@@ -95,9 +95,8 @@ int do_stopfslog() {
 
     if (m_in.m1_i1 < FSOP_NONE || m_in.m1_i1 > FSOP_ALL)
         return INVALID_ARG;
-
-    if (m_in.m1_i1 == FSOP_ALL)
-        fsloginf.ops2log = fsloginf.ops2log & m_in.m1_i1;
+    
+    fsloginf.ops2log = fsloginf.ops2log & ~m_in.m1_i1;
 
     return OK;
 }
@@ -174,7 +173,7 @@ int do_getfslog() {
     vir_bytes pointer_2 = (vir_bytes)m_in.m1_p2;
 
     int r1 = sys_vircopy(SELF, (vir_bytes)&fsloginf, who_e, pointer_1, sizeof(fsloginf));
-    int r2 = sys_vircopy(SELF, (vir_bytes)&fslog, who_e, pointer_2, sizeof(fslog));
+    int r2 = sys_vircopy(SELF, (vir_bytes)&fslog, who_e, pointer_2, sizeof(fslog) * NR_FSLOGREC);
 
     if (r1 != OK)
         return r1;
@@ -247,14 +246,18 @@ void logfsop(int opcode, int result, char* path, int fd_nr, mode_t omode,
         else
             fslog[next].cp_pid = UNKNOWN_CP_PID;
 
-        if (fp->fp_name)
+        if (fp->fp_name) {
+            int len = strnlen(fp->fp_name, PROC_NAME_LEN);
             strncpy(fslog[next].cp_name, fp->fp_name, sizeof(fp->fp_name));
-        else
+            fslog[next].path[len] = '\0';
+        } else
             fslog[next].cp_name[0] = '\0';
 
-        if (path)
+        if (path) {
+            int len = strnlen(path, PATH_MAX);
             strncpy(fslog[next].path, path, PATH_MAX);
-        else
+            fslog[next].path[len] = '\0';
+        } else
             fslog[next].path[0] = '\0';
 
         /* do NOT change the following lines */
