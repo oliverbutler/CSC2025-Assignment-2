@@ -116,8 +116,8 @@ int do_unlink()
 	/* Direct copy failed, try fetching from user space */
 
     /* CSC2025 mod start */
-	if (fetch_name(vname, vname_length, fullpath) != OK) 
-        logfserr_nopath(FSOP_UNLNK, err_code);
+	  if (fetch_name(vname, vname_length, fullpath) != OK) 
+      logfserr_nopath(FSOP_UNLNK, err_code);
 		return(err_code);
     
     /* CSC2025 mod end */
