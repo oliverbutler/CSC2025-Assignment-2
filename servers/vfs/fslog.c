@@ -2,13 +2,13 @@
  * Replace the following string of 0s with your student number
  * 180121816
  */
-#include "fslog.h"
-#include <stdio.h>
 #include <string.h>
-#include <time.h>
 #include <unistd.h>
-#include "fproc.h"  // provides definition of fproc
-#include "fs.h"     // for glo.h:  fp, mp, call_nr, who_p etc.
+#include <time.h>
+#include <stdio.h>
+#include "fs.h"             // for glo.h:  fp, mp, call_nr, who_p etc.
+#include "fproc.h"          // provides definition of fproc
+#include "fslog.h"
 
 #define INVALID_ARG -22 /* gets converted to EINVAL by syscall */
 
@@ -92,6 +92,7 @@ int do_startfslog() {
  * INVALID_ARG if m_in.m1_i1 is less than FSOP_NONE or greater than FSOP_ALL
  */
 int do_stopfslog() {
+
     if (m_in.m1_i1 < FSOP_NONE || m_in.m1_i1 > FSOP_ALL)
         return INVALID_ARG;
 
@@ -129,9 +130,10 @@ int do_getfsloginf() {
     if (m_in.m1_p1 == NULL)
         return INVALID_ARG;
 
-    vir_bytes pointer = (vir_bytes)m_in.m1_p1;
+    vir_bytes pointer_src = (vir_bytes) & fsloginf;
+    vir_bytes pointer_dst = (vir_bytes)m_in.m1_p1;
 
-    int r = sys_vircopy(SELF, (vir_bytes)fsloginf, who_e, pointer, sizeof(fsloginf));
+    int r = sys_vircopy(SELF, pointer_src, who_e, pointer_dst, sizeof(fsloginf));
 
     return r;
 }
@@ -171,8 +173,8 @@ int do_getfslog() {
     vir_bytes pointer_1 = (vir_bytes)m_in.m1_p1;
     vir_bytes pointer_2 = (vir_bytes)m_in.m1_p2;
 
-    int r1 = sys_vircopy(SELF, (vir_bytes)fsloginf, who_e, pointer_1, sizeof(fsloginf));
-    int r2 = sys_vircopy(SELF, (vir_bytes)fslogrec, who_e, pointer_2, sizeof(fslogrec));
+    int r1 = sys_vircopy(SELF, (vir_bytes)&fsloginf, who_e, pointer_1, sizeof(fsloginf));
+    int r2 = sys_vircopy(SELF, (vir_bytes)&fslog, who_e, pointer_2, sizeof(fslog));
 
     if (r1 != OK)
         return r1;
@@ -251,7 +253,7 @@ void logfsop(int opcode, int result, char* path, int fd_nr, mode_t omode,
             fslog[next].cp_name[0] = '\0';
 
         if (path)
-            strncpy(fslog[next].cp_path, path, sizeof(path));
+            strncpy(fslog[next].path, path, PATH_MAX);
         else
             fslog[next].path[0] = '\0';
 

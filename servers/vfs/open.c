@@ -11,26 +11,26 @@
  *   do_llseek: perform the LLSEEK system call
  */
 
-#include <assert.h>
-#include <dirent.h>
+#include "fs.h"
+#include <sys/stat.h>
 #include <fcntl.h>
+#include <string.h>
+#include <unistd.h>
 #include <minix/callnr.h>
 #include <minix/com.h>
 #include <minix/u64.h>
-#include <minix/vfsif.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include "dmap.h"
 #include "file.h"
 #include "fproc.h"
-#include "fs.h"
+#include "scratchpad.h"
+#include "dmap.h"
 #include "lock.h"
 #include "param.h"
-#include "path.h"
-#include "scratchpad.h"
-#include "vmnt.h"
+#include <dirent.h>
+#include <assert.h>
+#include <minix/vfsif.h>
 #include "vnode.h"
+#include "vmnt.h"
+#include "path.h"
 /* CSC2025 mod start */
 #include "fslog.h"
 /* CSC2025 mod end */

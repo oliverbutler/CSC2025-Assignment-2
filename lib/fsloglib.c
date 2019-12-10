@@ -2,9 +2,9 @@
  * Replace the following string of 0s with your student number
  * 180121816
  */
-#include "fsloglib.h"
+#include <lib.h>    // provides _syscall and message
 #include <errno.h>
-#include <lib.h>  // provides _syscall and message
+#include "fsloglib.h"
 
 /*
  * TODO: implement initfslog

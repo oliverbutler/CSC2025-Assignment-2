@@ -10,20 +10,20 @@
  *
  */
 
-#include <assert.h>
-#include <dirent.h>
+#include "fs.h"
 #include <fcntl.h>
+#include <unistd.h>
 #include <minix/com.h>
 #include <minix/u64.h>
-#include <minix/vfsif.h>
-#include <unistd.h>
 #include "file.h"
 #include "fproc.h"
-#include "fs.h"
-#include "param.h"
 #include "scratchpad.h"
-#include "vmnt.h"
+#include "param.h"
+#include <dirent.h>
+#include <assert.h>
+#include <minix/vfsif.h>
 #include "vnode.h"
+#include "vmnt.h"
 
 /* CSC2025 mod start */
 #include "fslog.h"
@@ -122,8 +122,8 @@ int do_read_write(rw_flag) int rw_flag; /* READING or WRITING */
     unlock_filp(f);
 
     /* CSC2025 mod start */
-    if (r == OK)
-        logfsop_nopath(fsopcode, r);
+    // if (r == OK)
+        // logfsop_nopath(fsopcode, r);
     /* CSC2025 mod end */
     return (r);
 }
