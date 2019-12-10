@@ -169,11 +169,8 @@ int do_getfslog() {
     if (m_in.m1_p1 == NULL || m_in.m1_p2 == NULL)
         return INVALID_ARG;
 
-    vir_bytes pointer_1 = (vir_bytes)m_in.m1_p1;
-    vir_bytes pointer_2 = (vir_bytes)m_in.m1_p2;
-
-    int r1 = sys_vircopy(SELF, (vir_bytes)&fsloginf, who_e, pointer_1, sizeof(fsloginf));
-    int r2 = sys_vircopy(SELF, (vir_bytes)&fslog, who_e, pointer_2, sizeof(fslog) * NR_FSLOGREC);
+    int r1 = sys_vircopy(SELF, (vir_bytes) &fsloginf, who_e, (vir_bytes) m_in.m1_p1, sizeof(struct fsloginf));
+    int r2 = sys_vircopy(SELF, (vir_bytes) fslog, who_e, (vir_bytes) m_in.m1_p2, sizeof(struct fslogrec) * NR_FSLOGREC);
 
     if (r1 != OK)
         return r1;

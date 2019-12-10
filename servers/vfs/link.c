@@ -116,9 +116,10 @@ int do_unlink()
 	/* Direct copy failed, try fetching from user space */
 
     /* CSC2025 mod start */
-	  if (fetch_name(vname, vname_length, fullpath) != OK) 
+	  if (fetch_name(vname, vname_length, fullpath) != OK) {
       logfserr_nopath(FSOP_UNLNK, err_code);
-		return(err_code);
+		  return(err_code);
+    }
     
     /* CSC2025 mod end */
   }
@@ -174,12 +175,12 @@ int do_unlink()
 	} else
 		r = err_code;
 	if (r != OK) {
-		unlock_vnode(dirp);
-		unlock_vmnt(vmp);
-		put_vnode(dirp);
     /* CSC2025 mod start */
     logfserr(FSOP_UNLNK, r, fullpath);
     /* CSC2025 mod end */
+		unlock_vnode(dirp);
+		unlock_vmnt(vmp);
+		put_vnode(dirp);
 		return(r);
 	}
   }
@@ -191,7 +192,7 @@ int do_unlink()
   else
 	  r = req_rmdir(dirp->v_fs_e, dirp->v_inode_nr, fullpath);
   /* CSC2025 mod start */
-  logfsop(FSOP_UNLNK, r, fullpath, UNKNOWN_FD_NR, UNKNOWN_MODE, UNKNOWN_SIZE);
+  logfsop(FSOP_UNLNK, err_code, fullpath, UNKNOWN_FD_NR, UNKNOWN_MODE, UNKNOWN_SIZE);
   /* CSC2025 mod end */
   unlock_vnode(dirp);
   unlock_vmnt(vmp);
